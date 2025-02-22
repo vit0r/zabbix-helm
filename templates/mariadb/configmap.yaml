@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  MARIADB_DATABASE: "zabbix"
+kind: ConfigMap
+metadata:
+  labels:
+    service: zabbix
+  name: {{.Chart.Name }}-mariadb
+  namespace: {{ .Release.Namespace }}

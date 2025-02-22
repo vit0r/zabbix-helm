@@ -16,7 +16,7 @@ spec:
     matchLabels:
       service: {{.Chart.Name }}-server
   strategy:
-    type: RollingUpdate
+    type: Recreate
   template:
     metadata:
       annotations:
@@ -32,12 +32,12 @@ spec:
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: MYSQL_PASSWORD
+                  key: MARIADB_ROOT_PASSWORD
                   name: zabbix
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  key: MYSQL_USER
+                  key: MARIADB_USER
                   name: zabbix
             - name: DB_SERVER_HOST
               valueFrom:
@@ -47,7 +47,7 @@ spec:
             - name: MYSQL_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  key: MYSQL_DATABASE
+                  key: MARIADB_DATABASE
                   name: {{.Chart.Name }}-server
             - name: PHP_TZ
               valueFrom:
@@ -63,11 +63,6 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: ZBX_HOSTNAME
-                  name: {{.Chart.Name }}-server
-            - name: ZBX_SERVER_HOST
-              valueFrom:
-                configMapKeyRef:
-                  key: ZBX_SERVER_HOST
                   name: {{.Chart.Name }}-server
             - name: ZBX_SERVER_HOST
               valueFrom:

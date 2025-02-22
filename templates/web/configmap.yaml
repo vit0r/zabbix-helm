@@ -6,9 +6,9 @@ data:
   ZBX_HOSTNAME: {{ .Chart.Name }}-web
   ZBX_SERVER_NAME: {{ .Values.companyName }}
   ZBX_SERVER_HOST: {{ .Chart.Name }}-server.{{ .Release.Namespace }}.svc.cluster.local
-  DB_SERVER_HOST: mariadb.{{ .Release.Namespace }}.svc.cluster.local
+  DB_SERVER_HOST: {{.Chart.Name }}-mariadb.{{ .Release.Namespace }}.svc.cluster.local
   DB_SERVER_PORT: "3306"
-  MYSQL_DATABASE: "{{ .Chart.Name }}"
+  MARIADB_DATABASE: "{{ .Chart.Name }}"
 kind: ConfigMap
 metadata:
   labels:

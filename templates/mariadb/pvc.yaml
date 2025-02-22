@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Chart.Name }}-mariadb
+  namespace: {{ .Release.Namespace }}
+  labels:
+    service: {{.Chart.Name }}-mariadb
+spec:
+  storageClassName: {{ .Values.mariadb.persistence.storageClassName | default "standard" }}
+  resources:
+    requests:
+      storage: {{ .Values.mariadb.persistence.size | default "50Gi" }}
+  accessModes:
+    - {{ .Values.mariadb.persistence.accessMode | default "ReadWriteOnce" }}

@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    com.zabbix.company: {{ .Values.companyName }}
+    com.zabbix.component: {{.Chart.Name }}-mariadb
+    com.zabbix.description: Zabbix Server
+    com.zabbix.os: alpine
+  labels:
+    service: {{.Chart.Name }}-mariadb
+  name: {{.Chart.Name }}-mariadb
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: {{.Chart.Name }}-mariadb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        com.zabbix.company: {{ .Values.companyName }}
+        com.zabbix.component: {{.Chart.Name }}-mariadb
+        com.zabbix.description: Zabbix Server
+        com.zabbix.os: alpine
+      labels:
+        service: {{.Chart.Name }}-mariadb
+    spec:
+      containers:
+        - env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MARIADB_ROOT_PASSWORD
+                  name: zabbix
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MARIADB_ROOT_PASSWORD
+                  name: zabbix
+            - name: MARIADB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: MARIADB_USER
+                  name: zabbix
+            - name: MARIADB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: MARIADB_DATABASE
+                  name: {{ .Chart.Name }}-mariadb
+          image: mariadb:{{ .Values.mariadb.tag }}
+          name: {{.Chart.Name }}-mariadb
+          ports:
+            - containerPort: 3306
+          resources:
+            requests:
+              cpu: "100m"
+              memory: 512M
+            limits:
+              memory: "1Gi"
+              cpu: "200m"
+          volumeMounts:
+            - name: {{ .Chart.Name }}-mariadb
+              mountPath: /var/lib/mysql
+      hostname: {{.Chart.Name }}-mariadb
+      restartPolicy: Always
+      volumes:
+        - name: {{.Chart.Name }}-mariadb
+          persistentVolumeClaim:
+            claimName: {{.Chart.Name }}-mariadb

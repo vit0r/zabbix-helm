@@ -17,3 +17,6 @@ securityContext:
   runAsUser: 1000
 companyName: MYCOMPANY
 domain: mydomain.local
+mariadb:
+  tag: 11.4.5
+  persistence: {}
