@@ -1,0 +1,18 @@
+apiVersion: v1
+data:
+  PHP_TZ: America/Sao_Paulo
+  ENABLE_WEB_ACCESS_LOG: "true"
+  ZBX_ENABLE_SNMP_TRAPS: "true"
+  ZBX_HOSTNAME: {{.Chart.Name }}-server
+  ZBX_SERVER_NAME: {{  .Value.companyName }}
+  ZBX_SERVER_HOST: {{.Chart.Name }}-server.{{ .Release.Namespace }}.svc.cluster.local
+  ZBX_LISTENIP: 192.168.1.20
+  DB_SERVER_HOST: mariadb.{{ .Release.Namespace }}.svc.cluster.local
+  DB_SERVER_PORT: "3306"
+  MYSQL_DATABASE: "zabbix"
+kind: ConfigMap
+metadata:
+  labels:
+    service: zabbix
+  name: {{.Chart.Name }}-server
+  namespace: {{ .Release.Namespace }}

@@ -1,0 +1,18 @@
+apiVersion: v1
+data:
+  PHP_TZ: America/Sao_Paulo
+  ENABLE_WEB_ACCESS_LOG: "true"
+  ZBX_ENABLE_SNMP_TRAPS: "true"
+  ZBX_ACTIVE_ALLOW: "false"
+  ZBX_HOSTNAME: zabbix-agent
+  ZBX_METADATA: Linux
+  ZBX_SERVER_HOST: zabbix-server.{{ .Release.Namespace }}.svc.cluster.local
+  DB_SERVER_HOST: mariadb.{{ .Release.Namespace }}.svc.cluster.local
+  DB_SERVER_PORT: "3306"
+  MYSQL_DATABASE: "zabbix"
+kind: ConfigMap
+metadata:
+  labels:
+    service: {{.Chart.Name }}
+  name: {{.Chart.Name }}-agent
+  namespace: {{ .Release.Namespace }}

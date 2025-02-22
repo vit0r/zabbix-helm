@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    com.zabbix.company: {{  .Value.companyName }}
+    com.zabbix.component: {{.Chart.Name }}-server
+    com.zabbix.description: Zabbix Server
+    com.zabbix.os: alpine
+  labels:
+    service: {{.Chart.Name }}-server
+  name: {{.Chart.Name }}-server
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: {{.Chart.Name }}-server
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        com.zabbix.company: {{  .Value.companyName }}
+        com.zabbix.component: {{.Chart.Name }}-server
+        com.zabbix.description: Zabbix Server
+        com.zabbix.os: alpine
+      labels:
+        service: {{.Chart.Name }}-server
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: zabbix
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_USER
+                  name: zabbix
+            - name: DB_SERVER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_SERVER_HOST
+                  name: {{.Chart.Name }}-server
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_DATABASE
+                  name: {{.Chart.Name }}-server
+            - name: PHP_TZ
+              valueFrom:
+                configMapKeyRef:
+                  key: PHP_TZ
+                  name: {{.Chart.Name }}-server
+            - name: ZBX_ENABLE_SNMP_TRAPS
+              valueFrom:
+                configMapKeyRef:
+                  key: ZBX_ENABLE_SNMP_TRAPS
+                  name: {{.Chart.Name }}-server
+            - name: ZBX_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: ZBX_HOSTNAME
+                  name: {{.Chart.Name }}-server
+            - name: ZBX_SERVER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: ZBX_SERVER_HOST
+                  name: {{.Chart.Name }}-server
+            - name: ZBX_SERVER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: ZBX_SERVER_HOST
+                  name: {{.Chart.Name }}-server
+          image: zabbix/{{.Chart.Name }}-server-mysql:alpine-{{ .Chart.AppVersion }}
+          name: {{.Chart.Name }}-server
+          ports:
+            - containerPort: 10051
+          resources:
+            requests:
+              cpu: "100m"
+              memory: 512M
+            limits:
+              memory: "1Gi"
+              cpu: "200m"
+      hostname: {{.Chart.Name }}-server
+      restartPolicy: Always

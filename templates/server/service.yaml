@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: {{.Chart.Name }}-server
+  name: {{.Chart.Name }}-server
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - name: "{{.Chart.Name }}-server"
+      port: 10051
+      targetPort: 10051
+  selector:
+    service: {{.Chart.Name }}-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: {{.Chart.Name }}-server
+  name: {{.Chart.Name }}-server-nodeport
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: NodePort
+  ports:
+    - name: "{{.Chart.Name }}-server-tcp"
+      port: 10051
+      targetPort: 10051
+      nodePort: 30051
+      protocol: TCP
+    - name: "{{.Chart.Name }}-server-upd"
+      port: 10051
+      targetPort: 30052
+      protocol: UDP
+  selector:
+    service: {{.Chart.Name }}-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: {{.Chart.Name }}-server
+  name: {{.Chart.Name }}-server-lb
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "{{.Chart.Name }}-server-lb-tcp"
+      port: 10051
+      targetPort: 10051
+      protocol: TCP
+    - name: "{{.Chart.Name }}-server-lb-upd"
+      port: 10051
+      protocol: UDP
+  selector:
+    service: {{.Chart.Name }}-server

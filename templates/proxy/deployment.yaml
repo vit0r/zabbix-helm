@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    com.zabbix.company: {{  .Value.companyName }}
+    com.zabbix.component: {{.Chart.Name }}-proxy
+    com.zabbix.description: Zabbix proxy
+    com.zabbix.os: alpine
+  labels:
+    service: {{.Chart.Name }}-proxy
+  name: {{.Chart.Name }}-proxy
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: {{.Chart.Name }}-proxy
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        com.zabbix.company: {{  .Value.companyName }}
+        com.zabbix.component: {{.Chart.Name }}-proxy
+        com.zabbix.description: Zabbix proxy
+        com.zabbix.os: alpine
+      labels:
+        service: {{.Chart.Name }}-proxy
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: zabbix
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_USER
+                  name: zabbix
+            - name: DB_SERVER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_SERVER_HOST
+                  name: {{.Chart.Name }}-proxy
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_DATABASE
+                  name: {{.Chart.Name }}-proxy
+            - name: ZBX_ENABLE_SNMP_TRAPS
+              valueFrom:
+                configMapKeyRef:
+                  key: ZBX_ENABLE_SNMP_TRAPS
+                  name: {{.Chart.Name }}-proxy
+            - name: ZBX_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: ZBX_HOSTNAME
+                  name: {{.Chart.Name }}-proxy
+            - name: ZBX_SERVER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: ZBX_SERVER_HOST
+                  name: {{.Chart.Name }}-proxy
+            - name: ZBX_PROXYMODE
+              valueFrom:
+                configMapKeyRef:
+                  key: ZBX_PROXYMODE
+                  name: {{.Chart.Name }}-proxy
+          image: zabbix/{{.Chart.Name }}-proxy-mysql:alpine-{{ .Chart.AppVersion }}
+          name: {{.Chart.Name }}-proxy
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256M
+            limits:
+              cpu: 200m
+              memory: 512M
+          ports:
+            - containerPort: 10050
+          securityContext:
+            privileged: true
+      hostname: {{.Chart.Name }}-proxy
+      restartPolicy: Always
