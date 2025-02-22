@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    com.zabbix.company: {{  .Value.companyName }}
+    com.zabbix.company: {{ .Values.companyName }}
     com.zabbix.component: {{.Chart.Name }}-server
     com.zabbix.description: Zabbix Server
     com.zabbix.os: alpine
@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       annotations:
-        com.zabbix.company: {{  .Value.companyName }}
+        com.zabbix.company: {{ .Values.companyName }}
         com.zabbix.component: {{.Chart.Name }}-server
         com.zabbix.description: Zabbix Server
         com.zabbix.os: alpine

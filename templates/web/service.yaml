@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    com.zabbix.company: {{  .Value.companyName }}
+    com.zabbix.company: {{ .Values.companyName }}
     com.zabbix.component: {{ .Chart.Name }}-web
     com.zabbix.description: Zabbix web
     com.zabbix.os: alpine

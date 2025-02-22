@@ -4,7 +4,7 @@ data:
   ENABLE_WEB_ACCESS_LOG: "true"
   ZBX_ENABLE_SNMP_TRAPS: "true"
   ZBX_HOSTNAME: {{ .Chart.Name }}-web
-  ZBX_SERVER_NAME: {{  .Value.companyName }}
+  ZBX_SERVER_NAME: {{ .Values.companyName }}
   ZBX_SERVER_HOST: {{ .Chart.Name }}-server.{{ .Release.Namespace }}.svc.cluster.local
   DB_SERVER_HOST: mariadb.{{ .Release.Namespace }}.svc.cluster.local
   DB_SERVER_PORT: "3306"
